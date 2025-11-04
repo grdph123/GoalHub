@@ -1,49 +1,22 @@
 import 'package:flutter/material.dart';
 
-class ItemHomepage {
+class MenuItem {
   final String name;
   final IconData icon;
+  final Color color;
 
-  ItemHomepage(this.name, this.icon);
+  MenuItem(this.name, this.icon, this.color);
 }
 
-class InfoCard extends StatelessWidget {
-  final String title;
-  final String content;
+class MenuCard extends StatelessWidget {
+  final MenuItem item;
 
-  const InfoCard({super.key, required this.title, required this.content});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 2.0,
-      child: Container(
-        width: MediaQuery.of(context).size.width / 3.5,
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8.0),
-            Text(content),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ItemCard extends StatelessWidget {
-  final ItemHomepage item;
-
-  const ItemCard(this.item, {super.key});
+  const MenuCard(this.item, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Theme.of(context).colorScheme.secondary,
+      color: item.color,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: () {
@@ -54,7 +27,7 @@ class ItemCard extends StatelessWidget {
             );
         },
         child: Container(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(16),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -62,13 +35,17 @@ class ItemCard extends StatelessWidget {
                 Icon(
                   item.icon,
                   color: Colors.white,
-                  size: 30.0,
+                  size: 40.0,
                 ),
-                const Padding(padding: EdgeInsets.all(3)),
+                const SizedBox(height: 12),
                 Text(
                   item.name,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
               ],
             ),
@@ -86,10 +63,10 @@ class MyHomePage extends StatelessWidget {
   final String npm = "2406437615"; 
   final String kelas = "PBP F"; 
 
-  final List<ItemHomepage> items = [
-    ItemHomepage("See Football News", Icons.newspaper),
-    ItemHomepage("Add News", Icons.add),
-    ItemHomepage("Logout", Icons.logout),
+  final List<MenuItem> menuItems = [
+    MenuItem("All Products", Icons.shopping_cart, Colors.blue),
+    MenuItem("My Products", Icons.inventory, Colors.green),
+    MenuItem("Create Product", Icons.add_circle, Colors.red),
   ];
 
   @override
@@ -97,7 +74,7 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Football News',
+          'GoalHub - Football Shop',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -110,41 +87,78 @@ class MyHomePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            // Info Cards
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                InfoCard(title: 'NPM', content: npm),
-                InfoCard(title: 'Name', content: nama),
-                InfoCard(title: 'Class', content: kelas),
+                _buildInfoCard('NPM', npm, context),
+                _buildInfoCard('Name', nama, context),
+                _buildInfoCard('Class', kelas, context),
               ],
             ),
-            const SizedBox(height: 16.0),
-            Center(
-              child: Column(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 16.0),
-                    child: Text(
-                      'Selamat datang di Football News',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.0,
-                      ),
-                    ),
-                  ),
-                  GridView.count(
-                    primary: true,
-                    padding: const EdgeInsets.all(20),
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    crossAxisCount: 3,
-                    shrinkWrap: true,
-                    children: items.map((ItemHomepage item) {
-                      return ItemCard(item);
-                    }).toList(),
-                  ),
-                ],
+            
+            const SizedBox(height: 32.0),
+            
+            // Welcome Text
+            const Text(
+              'Welcome to GoalHub!',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 24.0,
               ),
+            ),
+            
+            const SizedBox(height: 8.0),
+            
+            const Text(
+              'Your Ultimate Football Shop',
+              style: TextStyle(
+                fontSize: 16.0,
+                color: Colors.grey,
+              ),
+            ),
+            
+            const SizedBox(height: 32.0),
+            
+            // Menu Grid
+            Expanded(
+              child: GridView.count(
+                padding: const EdgeInsets.all(20),
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                crossAxisCount: 1,
+                childAspectRatio: 3.0,
+                children: menuItems.map((MenuItem item) {
+                  return MenuCard(item);
+                }).toList(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoCard(String title, String content, BuildContext context) {
+    return Card(
+      elevation: 2.0,
+      child: Container(
+        width: MediaQuery.of(context).size.width / 3.5,
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+              ),
+            ),
+            const SizedBox(height: 4.0),
+            Text(
+              content,
+              style: const TextStyle(fontSize: 10),
+              textAlign: TextAlign.center,
             ),
           ],
         ),

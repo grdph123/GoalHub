@@ -1,16 +1,38 @@
-# football_news
+# GoalHub - Football Shop
 
-A new Flutter project.
+A Flutter-based football merchandise shopping app.
 
-## Getting Started
+## Tugas 7: Elemen Dasar Flutter
 
-This project is a starting point for a Flutter application.
+### Pertanyaan & Jawaban
 
-A few resources to get you started if this is your first Flutter project:
+#### 1. Widget Tree pada Flutter
+Widget tree adalah struktur hierarkis yang menggambarkan hubungan parent-child antar widget dalam aplikasi Flutter. Setiap widget dapat memiliki child widget, membentuk pohon yang menentukan layout dan behavior aplikasi.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+#### 2. Widget yang Digunakan
+- **MaterialApp**: Widget root yang menyediakan material design
+- **Scaffold**: Struktur dasar halaman dengan appbar dan body
+- **AppBar**: Header/toolbar aplikasi
+- **Column**: Menyusun widget secara vertikal
+- **Row**: Menyusun widget secara horizontal
+- **GridView**: Menampilkan widget dalam grid
+- **Card**: Container dengan elevation/shadow
+- **Text**: Menampilkan teks
+- **Icon**: Menampilkan ikon material
+- **InkWell**: Area yang responsive terhadap tap
+- **SnackBar**: Notifikasi sementara di bagian bawah
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+#### 3. Fungsi MaterialApp
+MaterialApp adalah widget root yang menyediakan material design, theme, navigation, dan localization. Digunakan sebagai root karena memberikan struktur dasar yang diperlukan aplikasi Flutter.
+
+#### 4. Perbedaan StatelessWidget vs StatefulWidget
+- **StatelessWidget**: Immutable, tidak berubah setelah dibuat
+- **StatefulWidget**: Mutable, dapat berubah state-nya
+Pilih StatelessWidget ketika UI statis, StatefulWidget ketika UI perlu update dinamis.
+
+#### 5. BuildContext
+BuildContext adalah handle ke lokasi widget dalam tree. Penting untuk mengakses theme, navigation, dan parent widgets. Digunakan dalam build method untuk mendapatkan context saat ini.
+
+#### 6. Hot Reload vs Hot Restart
+- **Hot Reload**: Mempertahankan state, cepat untuk perubahan UI
+- **Hot Restart**: Reset state, diperlukan untuk perubahan logic penting
