@@ -36,3 +36,35 @@ BuildContext adalah handle ke lokasi widget dalam tree. Penting untuk mengakses 
 #### 6. Hot Reload vs Hot Restart
 - **Hot Reload**: Mempertahankan state, cepat untuk perubahan UI
 - **Hot Restart**: Reset state, diperlukan untuk perubahan logic penting
+
+
+## Tugas 8: Flutter Navigation, Layouts, Forms, and Input Elements
+
+### Pertanyaan & Jawaban
+
+#### 1. Perbedaan Navigator.push() dan Navigator.pushReplacement()
+- **Navigator.push()**: Menambahkan halaman baru ke stack navigation, pengguna bisa kembali ke halaman sebelumnya dengan tombol back.
+- **Navigator.pushReplacement()**: Mengganti halaman saat ini dengan halaman baru, menghapus halaman sebelumnya dari stack.
+
+**Penggunaan di GoalHub**:
+- `push()` digunakan dari tombol "Create Product" karena user mungkin ingin kembali ke menu
+- `pushReplacement()` digunakan di drawer untuk navigasi utama
+
+#### 2. Pemanfaatan Hierarchy Widget
+- **Scaffold**: Struktur dasar halaman dengan AppBar, Drawer, dan Body
+- **AppBar**: Header konsisten dengan judul dan warna brand
+- **Drawer**: Navigasi yang mudah diakses dari semua halaman
+
+#### 3. Kelebihan Layout Widget
+- **Padding**: Memberikan jarak yang konsisten antar elemen form
+- **SingleChildScrollView**: Membuat form dapat di-scroll pada layar kecil
+- **ListView**: Menampilkan item dalam list yang terorganisir
+
+#### 4. Penyesuaian Warna Tema
+Menggunakan warna biru (`Colors.blue`) secara konsisten di:
+- AppBar semua halaman
+- Drawer header
+- Tombol utama
+- Theme primary color
+
+Hal ini menciptakan identitas visual yang kuat untuk brand GoalHub.
