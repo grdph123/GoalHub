@@ -59,17 +59,18 @@ class MyHomePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 32.0),
-            Expanded(
-              child: GridView.count(
-                padding: const EdgeInsets.all(20),
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                crossAxisCount: 1,
-                childAspectRatio: 3.0,
-                children: productItems.map((ProductItem item) {
-                  return ProductCard(item);
-                }).toList(),
-              ),
+            // EDIT BAGIAN INI SAJA - UBAH JADI HORIZONTAL
+            GridView.count(
+              primary: true,
+              padding: const EdgeInsets.all(20),
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              crossAxisCount: 3, // ← UBAH DARI 1 JADI 3
+              shrinkWrap: true,
+              childAspectRatio: 1.0, // ← SESUAIKAN UNTUK BENTUK KOTAK
+              children: productItems.map((ProductItem item) {
+                return ProductCard(item);
+              }).toList(),
             ),
           ],
         ),
