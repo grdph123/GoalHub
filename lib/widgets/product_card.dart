@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../screens/product_form.dart';
+import '../screens/productlist_form.dart';
 
 class ProductItem {
   final String name;
