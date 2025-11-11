@@ -199,6 +199,26 @@ class _ProductFormPageState extends State<ProductFormPage> {
                     ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
+                        // Simpan nilai sementara sebelum reset
+                        final String tempName = _name;
+                        final int tempPrice = _price;
+                        final String tempDescription = _description;
+                        final String tempCategory = _category;
+                        final String tempThumbnail = _thumbnail;
+                        final bool tempFeatured = _isFeatured;
+
+                        // Reset form dan state
+                        _formKey.currentState!.reset();
+                        setState(() {
+                          _name = "";
+                          _price = 0;
+                          _description = "";
+                          _category = "jersey";
+                          _thumbnail = "";
+                          _isFeatured = false;
+                        });
+
+                        // Tampilkan dialog dengan nilai yang disimpan
                         showDialog(
                           context: context,
                           builder: (context) {
@@ -208,12 +228,12 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('Name: $_name'),
-                                    Text('Price: \$$_price'),
-                                    Text('Description: $_description'),
-                                    Text('Category: $_category'),
-                                    Text('Thumbnail: $_thumbnail'),
-                                    Text('Featured: ${_isFeatured ? "Yes" : "No"}'),
+                                    Text('Name: $tempName'),
+                                    Text('Price: \$$tempPrice'),
+                                    Text('Description: $tempDescription'),
+                                    Text('Category: $tempCategory'),
+                                    Text('Thumbnail: $tempThumbnail'),
+                                    Text('Featured: ${tempFeatured ? "Yes" : "No"}'),
                                   ],
                                 ),
                               ),
@@ -228,7 +248,6 @@ class _ProductFormPageState extends State<ProductFormPage> {
                             );
                           },
                         );
-                        _formKey.currentState!.reset();
                       }
                     },
                     child: const Text(
