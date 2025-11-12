@@ -61,7 +61,7 @@ BuildContext adalah handle ke lokasi widget dalam tree. Penting untuk mengakses 
 - **ListView**: Menampilkan item dalam list yang terorganisir
 
 #### 4. Penyesuaian Warna Tema
-Menggunakan warna biru (`Colors.blue`) secara konsisten di:
+Menggunakan warna biru (`Colors.green`) secara konsisten di:
 - AppBar semua halaman
 - Drawer header
 - Tombol utama

@@ -34,7 +34,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
             'Add New Product',
           ),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.green,
         foregroundColor: Colors.white,
       ),
       drawer: const LeftDrawer(),
@@ -195,7 +195,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.blue),
+                      backgroundColor: MaterialStateProperty.all(Colors.green),
                     ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {

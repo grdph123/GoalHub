@@ -20,13 +20,13 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'GoalHub - Football Shop',
+          'GoalHub',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.green,
       ),
       drawer: const LeftDrawer(),
       body: Padding(
