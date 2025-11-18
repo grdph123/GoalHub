@@ -108,13 +108,6 @@ Alasan menggunakan Provider:
 - Avoid Prop Drilling: Akses mudah tanpa passing melalui multiple widgets
 - Efficiency: Single instance mencegah session conflicts
 
-* dart
-// Di main.dart - dibagikan ke seluruh app
-return Provider(
-  create: (_) => CookieRequest(),
-  child: MaterialApp(...),
-);
-
 ## 4. Konfigurasi konektivitas Flutter-Django
 Konfigurasi yang diperlukan:
 - ALLOWED_HOSTS = ['10.0.2.2']
@@ -128,9 +121,6 @@ Konfigurasi yang diperlukan:
 - CSRF_COOKIE_SAMESITE = 'None'
 - Essential untuk cookies work di cross-site context
 - Izin Internet di AndroidManifest.xml
-
-* xml
-- <uses-permission android:name="android.permission.INTERNET" />
 
 Konsekuensi konfigurasi salah:
 - Connection refused errors
@@ -147,23 +137,6 @@ Flow lengkap pengiriman data:
 - JSON Response → Django return success/error response
 - State Update → Flutter update UI state
 - Navigation → Arahkan user ke halaman berikutnya
-
-Contoh implementasi:
-* dart
-- // 1. Validasi form
-- if (_formKey.currentState!.validate()) {
--  // 2. Kirim request
--  final response = await request.postJson(
--    "http://10.0.2.2:8000/create-product-flutter/",
--    jsonEncode(productData),
--  );
-  
--  // 3. Handle response & update UI
--  if (response['status'] == 'success') {
--    Navigator.pushReplacement(context, 
--      MaterialPageRoute(builder: (context) => ProductListPage()));
--  }
-- }
 
 ## 6. Mekanisme autentikasi dari login hingga logout
 Flow autentikasi lengkap:
