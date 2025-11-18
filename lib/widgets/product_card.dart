@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../screens/productlist_form.dart';
+import '../screens/product_list.dart'; // Import untuk All Products
+import '../screens/my_products.dart';
 
 class ProductItem {
   final String name;
@@ -18,13 +20,13 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: item.color,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(8),
       child: InkWell(
         onTap: () {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
-              SnackBar(content: Text("Kamu telah menekan tombol ${item.name}!"))
+              SnackBar(content: Text("You pressed ${item.name}!"))
             );
 
           if (item.name == "Create Product") {
@@ -32,10 +34,26 @@ class ProductCard extends StatelessWidget {
               context,
               MaterialPageRoute(builder: (context) => const ProductFormPage()),
             );
+          // Di dalam onTap, tambahkan:
+          } else if (item.name == "My Products") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const MyProductsPage()),
+            );
+          } else if (item.name == "All Products") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ProductListPage()),
+            );
+          } else if (item.name == "My Products") {
+            // TODO: Tambahkan navigasi ke My Products page
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("My Products feature coming soon!")),
+            );
           }
         },
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(6), // Padding lebih kecil untuk horizontal
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -43,16 +61,16 @@ class ProductCard extends StatelessWidget {
                 Icon(
                   item.icon,
                   color: Colors.white,
-                  size: 40.0,
+                  size: 20.0, // Icon lebih kecil
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 4),
                 Text(
                   item.name,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 10, // Font lebih kecil
                   ),
                 ),
               ],

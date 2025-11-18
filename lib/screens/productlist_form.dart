@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import '../widgets/left_drawer.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+import 'dart:convert';
+import 'product_list.dart'; // #baru Import untuk navigasi
 
 class ProductFormPage extends StatefulWidget {
   const ProductFormPage({super.key});
@@ -16,6 +20,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
   String _category = "jersey";
   String _thumbnail = "";
   bool _isFeatured = false;
+  bool _isLoading = false;
 
   final List<String> _categories = [
     'jersey',
@@ -27,6 +32,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -166,15 +173,6 @@ class _ProductFormPageState extends State<ProductFormPage> {
                       _thumbnail = value!;
                     });
                   },
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return "Thumbnail URL cannot be empty!";
-                    }
-                    if (!value.startsWith('http')) {
-                      return "Please enter a valid URL!";
-                    }
-                    return null;
-                  },
                 ),
               ),
               Padding(
@@ -192,69 +190,103 @@ class _ProductFormPageState extends State<ProductFormPage> {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.green),
-                    ),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        // Simpan nilai sementara sebelum reset
-                        final String tempName = _name;
-                        final int tempPrice = _price;
-                        final String tempDescription = _description;
-                        final String tempCategory = _category;
-                        final String tempThumbnail = _thumbnail;
-                        final bool tempFeatured = _isFeatured;
+                  padding: const EdgeInsets.all(16.0),
+                  child: _isLoading
+                      ? const CircularProgressIndicator()
+                      : ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(Colors.green),
+                            minimumSize: MaterialStateProperty.all(const Size(double.infinity, 50)),
+                          ),
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              setState(() {
+                                _isLoading = true;
+                              });
 
-                        // Reset form dan state
-                        _formKey.currentState!.reset();
-                        setState(() {
-                          _name = "";
-                          _price = 0;
-                          _description = "";
-                          _category = "jersey";
-                          _thumbnail = "";
-                          _isFeatured = false;
-                        });
+                              try {
+                                print("=== SENDING PRODUCT DATA ===");
+                                print("Name: $_name");
+                                print("Price: $_price");
+                                print("Category: $_category");
+                                print("Featured: $_isFeatured");
 
-                        // Tampilkan dialog dengan nilai yang disimpan
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Product Successfully Saved!'),
-                              content: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Name: $tempName'),
-                                    Text('Price: \$$tempPrice'),
-                                    Text('Description: $tempDescription'),
-                                    Text('Category: $tempCategory'),
-                                    Text('Thumbnail: $tempThumbnail'),
-                                    Text('Featured: ${tempFeatured ? "Yes" : "No"}'),
-                                  ],
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  child: const Text('OK'),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                              ],
-                            );
+                                // Kirim data ke Django
+                                final response = await request.postJson(
+                                  "http://127.0.0.1:8000/create-product-flutter/",
+                                  jsonEncode({
+                                    "name": _name,
+                                    "price": _price,
+                                    "description": _description,
+                                    "category": _category,
+                                    "thumbnail": _thumbnail,
+                                    "is_featured": _isFeatured,
+                                  }),
+                                );
+
+                                print("Response: $response");
+
+                                if (context.mounted) {
+                                  if (response['status'] == 'success') {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Product created successfully!'),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                    
+                                    // Reset form
+                                    _formKey.currentState!.reset();
+                                    setState(() {
+                                      _name = "";
+                                      _price = 0;
+                                      _description = "";
+                                      _category = "jersey";
+                                      _thumbnail = "";
+                                      _isFeatured = false;
+                                    });
+
+                                    // #baru Navigate ke Product List setelah delay singkat
+                                    Future.delayed(const Duration(milliseconds: 1500), () {
+                                      if (context.mounted) {
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => const ProductListPage()), // #baru
+                                        );
+                                      }
+                                    });
+
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Failed to create product: ${response['message']}'),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
+                                }
+                              } catch (e) {
+                                print("Error: $e");
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Error: $e'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
+                              } finally {
+                                setState(() {
+                                  _isLoading = false;
+                                });
+                              }
+                            }
                           },
-                        );
-                      }
-                    },
-                    child: const Text(
-                      "Save",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
+                          child: const Text(
+                            "Save Product",
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                        ),
                 ),
               ),
             ],
