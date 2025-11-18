@@ -130,7 +130,7 @@ Konfigurasi yang diperlukan:
 - Izin Internet di AndroidManifest.xml
 
 * xml
-<uses-permission android:name="android.permission.INTERNET" />
+- <uses-permission android:name="android.permission.INTERNET" />
 
 Konsekuensi konfigurasi salah:
 - Connection refused errors
@@ -150,80 +150,80 @@ Flow lengkap pengiriman data:
 
 Contoh implementasi:
 * dart
-// 1. Validasi form
-if (_formKey.currentState!.validate()) {
-  // 2. Kirim request
-  final response = await request.postJson(
-    "http://10.0.2.2:8000/create-product-flutter/",
-    jsonEncode(productData),
-  );
+- // 1. Validasi form
+- if (_formKey.currentState!.validate()) {
+-  // 2. Kirim request
+-  final response = await request.postJson(
+-    "http://10.0.2.2:8000/create-product-flutter/",
+-    jsonEncode(productData),
+-  );
   
-  // 3. Handle response & update UI
-  if (response['status'] == 'success') {
-    Navigator.pushReplacement(context, 
-      MaterialPageRoute(builder: (context) => ProductListPage()));
-  }
-}
+-  // 3. Handle response & update UI
+-  if (response['status'] == 'success') {
+-    Navigator.pushReplacement(context, 
+-      MaterialPageRoute(builder: (context) => ProductListPage()));
+-  }
+- }
 
 ## 6. Mekanisme autentikasi dari login hingga logout
 Flow autentikasi lengkap:
-* REGISTER
+REGISTER
 - Flutter POST data user ke endpoint register Django
 - Django create user dan auto login
 - Return session cookie yang disimpan CookieRequest
 
-* LOGIN
+LOGIN
 - Flutter kirim credentials via CookieRequest.login()
 - Django verify credentials dan create session
 - Session cookie otomatis disimpan untuk request selanjutnya
 
-* AUTHENTICATED REQUESTS
+AUTHENTICATED REQUESTS
 - Setiap request include session cookie secara otomatis
 - Django identify user dari session
 - Return data sesuai permissions user
 
-* LOGOUT
+LOGOUT
 - CookieRequest.logout() clear session
 - Django destroy session di server
 - User redirected ke login page
 
 ## 7. Implementasi checklist step-by-step
-* Step 1: Setup Dependencies & Environment
+Step 1: Setup Dependencies & Environment
 - Tambahkan http, pbp_django_auth, provider di pubspec.yaml
 - Configure AndroidManifest.xml untuk internet permission
 
-* Step 2: Authentication System
+Step 2: Authentication System
 - Buat LoginPage dengan CookieRequest.login()
 - Implement RegisterPage untuk user registration
 - Setup proper error handling dan loading states
 
-* Step 3: Data Models
+Step 3: Data Models
 - Buat Product model dengan fromJson constructor
 - Implement type-safe data parsing dari JSON
 
-* Step 4: Product Management
+Step 4: Product Management
 - ProductListPage: Fetch dan display semua products
 - ProductDetailPage: Tampilkan semua atribut product
 - ProductFormPage: Form untuk create new products
 
-* Step 5: User-specific Features
+Step 5: User-specific Features
 - MyProductsPage: Filter products berdasarkan user login
 - Implement proper data filtering logic
 
-* Step 6: Navigation & UX
+Step 6: Navigation & UX
 - Setup LeftDrawer dengan semua navigation links
 - Implement proper routing antara halaman
 - Add loading indicators dan feedback messages
 
-* Step 7: Error Handling & Validation
+Step 7: Error Handling & Validation
 - Form validation di client side
 - Network error handling
 - User-friendly error messages
 
-* Step 8: Testing & Debugging
+Step 8: Testing & Debugging
 - Test semua user flows
 - Verify data persistence
 - Ensure proper session management
 
-* Dengan implementasi ini, semua requirement tugas terpenuhi dengan architecture yang maintainable dan user experience yang baik.
+Dengan implementasi ini, semua requirement tugas terpenuhi dengan architecture yang maintainable dan user experience yang baik.
 
