@@ -75,41 +75,40 @@ Hal ini menciptakan identitas visual yang kuat untuk brand GoalHub.
 
 ## 1. Mengapa perlu membuat model Dart untuk JSON?
 Alasan pembuatan model Dart:
+- Type Safety: Memastikan konsistensi tipe data dan menghindari runtime errors
+- Null Safety: Mendefinisikan field yang boleh null atau required secara eksplisit
+- Maintainability: Perubahan struktur data hanya di satu tempat
+- IntelliSupport: Autocomplete dan error detection di IDE
+- Validation: Dapat menambahkan validasi custom dalam model
 
-Type Safety: Memastikan konsistensi tipe data dan menghindari runtime errors
-Null Safety: Mendefinisikan field yang boleh null atau required secara eksplisit
-Maintainability: Perubahan struktur data hanya di satu tempat
-IntelliSupport: Autocomplete dan error detection di IDE
-Validation: Dapat menambahkan validasi custom dalam model
 Konsekuensi tanpa model:
-
-Runtime errors sulit dideteksi
-Kode sulit dipahami dan dimaintain
-Tidak ada autocomplete untuk field JSON
-Risk terhadap null pointer exceptions
+- Runtime errors sulit dideteksi
+- Kode sulit dipahami dan dimaintain
+- Tidak ada autocomplete untuk field JSON
+- Risk terhadap null pointer exceptions
 
 ## 2. Fungsi package http vs CookieRequest
 Package http:
+- Membuat HTTP requests dasar (GET, POST, PUT, DELETE)
+- Tidak menangani session cookies secara otomatis
+- Cocok untuk API calls yang stateless
 
-Membuat HTTP requests dasar (GET, POST, PUT, DELETE)
-Tidak menangani session cookies secara otomatis
-Cocok untuk API calls yang stateless
 CookieRequest:
+- Extends functionality http package dengan session management
+- Otomatis menyimpan dan mengirim cookies Django
+- Essential untuk maintain login state across requests
+- Menangani autentikasi secara transparent
 
-Extends functionality http package dengan session management
-Otomatis menyimpan dan mengirim cookies Django
-Essential untuk maintain login state across requests
-Menangani autentikasi secara transparent
 Perbedaan utama: http untuk stateless requests, CookieRequest untuk stateful sessions dengan autentikasi.
 
 ## 3. Mengapa CookieRequest perlu dibagikan ke semua komponen?
 Alasan menggunakan Provider:
+- State Persistence: Maintain login state di seluruh aplikasi
+- Consistent Session: Semua komponen menggunakan session yang sama
+- Avoid Prop Drilling: Akses mudah tanpa passing melalui multiple widgets
+- Efficiency: Single instance mencegah session conflicts
 
-State Persistence: Maintain login state di seluruh aplikasi
-Consistent Session: Semua komponen menggunakan session yang sama
-Avoid Prop Drilling: Akses mudah tanpa passing melalui multiple widgets
-Efficiency: Single instance mencegah session conflicts
-dart
+* dart
 // Di main.dart - dibagikan ke seluruh app
 return Provider(
   create: (_) => CookieRequest(),
@@ -118,40 +117,39 @@ return Provider(
 
 ## 4. Konfigurasi konektivitas Flutter-Django
 Konfigurasi yang diperlukan:
+- ALLOWED_HOSTS = ['10.0.2.2']
+- 10.0.2.2 adalah alias localhost dari Android Emulator
+- Django hanya menerima request dari host yang terdaftar
+- Aktifkan CORS
+- Diperlukan karena Flutter dan Django berjalan di origin berbeda
+- Mengizinkan cross-origin requests
+- Pengaturan Cookie SameSite
+- SESSION_COOKIE_SAMESITE = 'None'
+- CSRF_COOKIE_SAMESITE = 'None'
+- Essential untuk cookies work di cross-site context
+- Izin Internet di AndroidManifest.xml
 
-ALLOWED_HOSTS = ['10.0.2.2']
-10.0.2.2 adalah alias localhost dari Android Emulator
-Django hanya menerima request dari host yang terdaftar
-Aktifkan CORS
-Diperlukan karena Flutter dan Django berjalan di origin berbeda
-Mengizinkan cross-origin requests
-Pengaturan Cookie SameSite
-SESSION_COOKIE_SAMESITE = 'None'
-CSRF_COOKIE_SAMESITE = 'None'
-Essential untuk cookies work di cross-site context
-Izin Internet di AndroidManifest.xml
-xml
+* xml
 <uses-permission android:name="android.permission.INTERNET" />
-Konsekuensi konfigurasi salah:
 
-Connection refused errors
-CORS policy violations
-Session tidak tersimpan
-CSRF verification failed
+Konsekuensi konfigurasi salah:
+- Connection refused errors
+- CORS policy violations
+- Session tidak tersimpan
+- CSRF verification failed
 
 ## 5. Mekanisme pengiriman data dari input hingga tampil
 Flow lengkap pengiriman data:
+- User Input → Form input di Flutter
+- Client Validation → Validasi di sisi Flutter
+- HTTP Request → CookieRequest.postJson() ke Django
+- Server Processing → Django validasi dan simpan ke database
+- JSON Response → Django return success/error response
+- State Update → Flutter update UI state
+- Navigation → Arahkan user ke halaman berikutnya
 
-User Input → Form input di Flutter
-Client Validation → Validasi di sisi Flutter
-HTTP Request → CookieRequest.postJson() ke Django
-Server Processing → Django validasi dan simpan ke database
-JSON Response → Django return success/error response
-State Update → Flutter update UI state
-Navigation → Arahkan user ke halaman berikutnya
 Contoh implementasi:
-
-dart
+* dart
 // 1. Validasi form
 if (_formKey.currentState!.validate()) {
   // 2. Kirim request
@@ -169,61 +167,63 @@ if (_formKey.currentState!.validate()) {
 
 ## 6. Mekanisme autentikasi dari login hingga logout
 Flow autentikasi lengkap:
+* REGISTER
+- Flutter POST data user ke endpoint register Django
+- Django create user dan auto login
+- Return session cookie yang disimpan CookieRequest
 
-REGISTER
-Flutter POST data user ke endpoint register Django
-Django create user dan auto login
-Return session cookie yang disimpan CookieRequest
-LOGIN
-Flutter kirim credentials via CookieRequest.login()
-Django verify credentials dan create session
-Session cookie otomatis disimpan untuk request selanjutnya
-AUTHENTICATED REQUESTS
-Setiap request include session cookie secara otomatis
-Django identify user dari session
-Return data sesuai permissions user
-LOGOUT
-CookieRequest.logout() clear session
-Django destroy session di server
-User redirected ke login page
+* LOGIN
+- Flutter kirim credentials via CookieRequest.login()
+- Django verify credentials dan create session
+- Session cookie otomatis disimpan untuk request selanjutnya
+
+* AUTHENTICATED REQUESTS
+- Setiap request include session cookie secara otomatis
+- Django identify user dari session
+- Return data sesuai permissions user
+
+* LOGOUT
+- CookieRequest.logout() clear session
+- Django destroy session di server
+- User redirected ke login page
 
 ## 7. Implementasi checklist step-by-step
-Step 1: Setup Dependencies & Environment
+* Step 1: Setup Dependencies & Environment
+- Tambahkan http, pbp_django_auth, provider di pubspec.yaml
+- Configure AndroidManifest.xml untuk internet permission
 
-Tambahkan http, pbp_django_auth, provider di pubspec.yaml
-Configure AndroidManifest.xml untuk internet permission
-Step 2: Authentication System
+* Step 2: Authentication System
+- Buat LoginPage dengan CookieRequest.login()
+- Implement RegisterPage untuk user registration
+- Setup proper error handling dan loading states
 
-Buat LoginPage dengan CookieRequest.login()
-Implement RegisterPage untuk user registration
-Setup proper error handling dan loading states
-Step 3: Data Models
+* Step 3: Data Models
+- Buat Product model dengan fromJson constructor
+- Implement type-safe data parsing dari JSON
 
-Buat Product model dengan fromJson constructor
-Implement type-safe data parsing dari JSON
-Step 4: Product Management
+* Step 4: Product Management
+- ProductListPage: Fetch dan display semua products
+- ProductDetailPage: Tampilkan semua atribut product
+- ProductFormPage: Form untuk create new products
 
-ProductListPage: Fetch dan display semua products
-ProductDetailPage: Tampilkan semua atribut product
-ProductFormPage: Form untuk create new products
-Step 5: User-specific Features
+* Step 5: User-specific Features
+- MyProductsPage: Filter products berdasarkan user login
+- Implement proper data filtering logic
 
-MyProductsPage: Filter products berdasarkan user login
-Implement proper data filtering logic
-Step 6: Navigation & UX
+* Step 6: Navigation & UX
+- Setup LeftDrawer dengan semua navigation links
+- Implement proper routing antara halaman
+- Add loading indicators dan feedback messages
 
-Setup LeftDrawer dengan semua navigation links
-Implement proper routing antara halaman
-Add loading indicators dan feedback messages
-Step 7: Error Handling & Validation
+* Step 7: Error Handling & Validation
+- Form validation di client side
+- Network error handling
+- User-friendly error messages
 
-Form validation di client side
-Network error handling
-User-friendly error messages
-Step 8: Testing & Debugging
+* Step 8: Testing & Debugging
+- Test semua user flows
+- Verify data persistence
+- Ensure proper session management
 
-Test semua user flows
-Verify data persistence
-Ensure proper session management
-Dengan implementasi ini, semua requirement tugas terpenuhi dengan architecture yang maintainable dan user experience yang baik.
+* Dengan implementasi ini, semua requirement tugas terpenuhi dengan architecture yang maintainable dan user experience yang baik.
 
