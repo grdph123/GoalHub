@@ -71,8 +71,6 @@ Hal ini menciptakan identitas visual yang kuat untuk brand GoalHub.
 
 ## Tugas 9: Integrasi Layanan Web Django dengan Aplikasi Flutter
 
-## Pertanyaan & Jawaban
-
 ## 1. Mengapa perlu membuat model Dart untuk JSON?
 Alasan pembuatan model Dart:
 - Type Safety: Memastikan konsistensi tipe data dan menghindari runtime errors
@@ -140,6 +138,7 @@ Flow lengkap pengiriman data:
 
 ## 6. Mekanisme autentikasi dari login hingga logout
 Flow autentikasi lengkap:
+
 REGISTER
 - Flutter POST data user ke endpoint register Django
 - Django create user dan auto login
